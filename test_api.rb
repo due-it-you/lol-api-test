@@ -24,12 +24,21 @@ return_data = Net::HTTP.get(uri)
 
 match_ids = JSON.parse(return_data)
 
-match_path = "/lol/match/v5/matches/#{match_ids.last}"
+# 特定のプレイヤーが同試合にいる確率の計算処理
+total_match_count = match_ids.size
+sniper_involved_match_count = 0
+sniper_uuid = 'WDbv5uMorZbemgyXCROYf2aJaH_WDsMuzzXSDoZAAVc_YMroQj_sTFVtn95CL60la52J2jLX6yXXnA'
 
-uri = URI.parse("#{endpoint}#{match_path}?api_key=#{ENV['API_KEY']}")
+match_ids.each do |match_id|
+  match_path = "/lol/match/v5/matches/#{match_id}"
+  uri = URI.parse("#{endpoint}#{match_path}?api_key=#{ENV['API_KEY']}")
+  return_data = Net::HTTP.get(uri)
+  match_data = JSON.parse(return_data)
+  participants = match_data["metadata"]["participants"]
+  sniper_involved_match_count += 1 if participants.include?(sniper_uuid)
+end
 
-return_data = Net::HTTP.get(uri)
+sniper_involved_match_rate_int = sniper_involved_match_count.to_f / total_match_count * 100
+sniper_involved_match_rate = sniper_involved_match_rate_int.to_s + "%"
 
-match_data = JSON.parse(return_data)
-
-p match_data["metadata"]["participants"]
+puts sniper_involved_match_rate 

@@ -6,7 +6,7 @@ require 'cgi'
 Dotenv.load
 
 # puuidの取得
-game_name = CGI.escape('ヒイロ')
+game_name = CGI.escape('テスト')
 tag_line = CGI.escape('JP1')
 endpoint = 'https://asia.api.riotgames.com'
 path = "/riot/account/v1/accounts/by-riot-id/#{game_name}/#{tag_line}"
